@@ -1,0 +1,6 @@
+include README.rst HISTORY.rst LICENSE Makefile
+recursive-include tests *
+recursive-exclude * __pycache__
+recursive-exclude * *.py[cod]
+recursive-exclude * .cache
+recursive-exclude * .coverage

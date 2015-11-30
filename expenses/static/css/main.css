@@ -1,0 +1,7 @@
+html {
+    font-family: HelveticaNeue, Helvetica, Arial, sans-serif;
+}
+
+.err-code, .err-msg {
+    text-align: center;
+}

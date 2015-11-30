@@ -1,0 +1,38 @@
+language: python
+matrix:
+  include:
+  - python: 3.5-dev
+    env: TOXENV=py35,coveralls
+  - python: 3.5-dev
+    env: TOXENV=py35-devel
+  - python: 3.4
+    env: TOXENV=py34
+  - python: 3.4
+    env: TOXENV=py34-devel
+  - python: 3.3
+    env: TOXENV=py33
+  - python: 3.3
+    env: TOXENV=py33-devel
+  - python: 2.7
+    env: TOXENV=py27,coveralls
+  - python: 2.7
+    env: TOXENV=py27-devel
+  - python: 2.6
+    env: TOXENV=py26
+  - python: 2.6
+    env: TOXENV=py26-devel
+  - python: pypy
+    env: TOXENV=pypy
+  - python: pypy
+    env: TOXENV=pypy-devel
+install: pip install tox
+script: tox
+deploy:
+  provider: pypi
+  user: nickfrostatx
+  password:
+    secure: O/9ASMLs1Cb0gx9UEFY6BmRfjTlGBlkNqpJmznDtNUarn8nnXqLgy7dKUdYxAzJmTDcHp9drhkp90s7eXqrbLen67Ur7L4n5P6eiW976hT9r522atrzzwja4JcYfHNezJu/EUw8VBVsCdVInf4O8bwF9Q/UXSxw9Cb03zkpf8dvkzHHZpmdIhWDHpJnqwdCDuVj0wlQ6/jEV2bZrYGPSPcDSJwnKAWveYNOQtwWze1nXCdoPEj1YlWAvZTIji//RVmYdspcVLEOCZPOyRpluTkfWdNsTnQ44xaI0F0j9F3GTppO5WbHPQM87XjgWnFcQfSiac39CD10ib0ciYmrrRFOVK95PwARQsCdZXW/I+I0edMHTBkpw6wz1X+SyLedwr9ckYpJ5beylzF9YNck8G5xhthdhazGo51AbbH6nck/SsanpGmJ6/h2KB2tldhF+71kBjJixoW5mZhYsDQe/ybHCNvyVTLXIa3S4oWSWFPc477PKY110XK4xIm92HD6SloLLJSIkEvpEZH6H4SefRfyu1VQ/LlZHBwqjpwlFyDidjsdKaM9h2odGKhqnvD+QYwQKDLPOnmkQtOesy+0NTPcphEGd+Gg5lEAhI3MFvv939Nk7G5UgjArlElN2mPCulOGzL1eYOJ4bGW7tgFkzKHEbDnq8aSgpNaiAQYTNuwI=
+  distributions: sdist bdist_wheel
+  on:
+    tags: true
+    condition: $TRAVIS_JOB_NUMBER = *.1

@@ -1,0 +1,8 @@
+{% extends "lib/base.html" %}
+
+{% block title %}Expenses - {{ e.name }}{% endblock %}
+
+{% block body %}
+    <h1 class="err-code">Error {{ e.code }}</h1>
+    <div class="err-msg">{{ e.name }}</div>
+{%- endblock %}
