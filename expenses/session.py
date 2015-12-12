@@ -74,7 +74,7 @@ class RedisSessionInterface(SessionInterface):
         redis_exp = self.get_session_lifetime(app, session)
         expire_seconds = redis_exp.days * 60 * 60 * 24 + redis_exp.seconds
         if session.old_sid:
-            app.redis.rename(self.redis_key(session.old_sid), redis_key)
+            app.redis.delete(self.redis_key(session.old_sid))
         if session.modified:
             app.redis.setex(redis_key, expire_seconds, dumps(dict(session)))
         else:
