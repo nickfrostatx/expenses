@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Test session."""
 
-from expenses.session import RedisSessionInterface
+from expenses.session import LazyRedisSessionInterface
 import fakeredis
 import flask
 import json
@@ -19,7 +19,11 @@ def client():
     app = flask.Flask(__name__)
     app.debug = True
     app.redis = db
-    app.session_interface = RedisSessionInterface()
+    app.session_interface = LazyRedisSessionInterface()
+
+    @app.route('/lazy')
+    def lazy():
+        return 'No sessions used'
 
     @app.route('/')
     def home():
@@ -50,6 +54,20 @@ def client():
         return home()
 
     return app.test_client()
+
+
+def test_lazy(client, monkeypatch):
+
+    def should_not_run():
+        raise AssertionError("This shouldn't run")
+    monkeypatch.setattr('expenses.session.RedisSessionInterface.open_session',
+                        should_not_run)
+    monkeypatch.setattr('expenses.session.RedisSessionInterface.save_session',
+                        should_not_run)
+
+    rv = client.get('/lazy')
+    assert rv.data == b'No sessions used'
+    assert 'session=' not in rv.headers.get('Cookie', '')
 
 
 def test_new_session(client):

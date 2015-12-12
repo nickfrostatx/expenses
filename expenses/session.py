@@ -3,7 +3,7 @@
 
 from datetime import datetime, timedelta
 from flask.sessions import SessionInterface, SessionMixin
-from .util import random_string
+from .util import LazyObject, random_string
 
 
 class RedisSession(dict, SessionMixin):
@@ -89,3 +89,16 @@ class RedisSessionInterface(SessionInterface):
         response.set_cookie(app.session_cookie_name, session.sid,
                             expires=cookie_exp, httponly=True, domain=domain,
                             secure=secure)
+
+
+class LazyRedisSessionInterface(RedisSessionInterface):
+
+    def open_session(self, *args):
+        def callback():
+            return super(LazyRedisSessionInterface, self).open_session(*args)
+        return LazyObject(callback)
+
+    def save_session(self, app, session, response):
+        if session.instantiated:
+            super(LazyRedisSessionInterface, self).save_session(app, session,
+                                                                response)
