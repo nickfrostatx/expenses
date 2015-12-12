@@ -11,10 +11,7 @@ import pytest
 @pytest.fixture
 def client():
     db = fakeredis.FakeStrictRedis()
-    db.hmset('session:abcd', {
-        'csrf': 'somecsrf',
-        'a': 'b',
-    })
+    db.set('session:abcd', '{"csrf": "somecsrf", "a": "b"}')
 
     app = flask.Flask(__name__)
     app.debug = True
@@ -130,9 +127,10 @@ def test_change_session(client):
         'csrf': 'abc',
         'a': 'c',
     }
-    assert client.application.redis.hgetall('session:abcd') == {
-        b'csrf': b'abc',
-        b'a': b'c',
+    session_data = client.application.redis.get('session:abcd').decode()
+    assert json.loads(session_data) == {
+        'csrf': 'abc',
+        'a': 'c',
     }
 
 
@@ -142,7 +140,7 @@ def test_delete_session(client):
     data = json.loads(rv.data.decode())
     assert data['sid'] == 'abcd'
     assert data['data'] == {}
-    assert client.application.redis.hgetall('session:abcd') == {}
+    assert not client.application.redis.exists('session:abcd')
     assert 'Expires=Thu, 01-Jan-1970 00:00:00 GMT' in rv.headers['Set-Cookie']
 
 
@@ -155,11 +153,14 @@ def test_rotate_session(client):
     assert 'session={0}'.format(data['sid']) in rv.headers['Set-Cookie']
     assert len(data['data']['csrf']) == 64
     assert data['data']['a'] == 'b'
-    assert client.application.redis.exists('session:abcd') == False
+    assert not client.application.redis.exists('session:abcd')
 
-    db_d = client.application.redis.hgetall('session:{0}'.format(data['sid']))
-    assert len(db_d[b'csrf']) == 64
-    assert db_d[b'a'] == b'b'
+    sid = data['sid']
+    session_data = client.application.redis.get('session:{0}'.format(sid))
+    db_d = json.loads(session_data.decode())
+
+    assert len(db_d['csrf']) == 64
+    assert db_d['a'] == 'b'
 
 
 def test_rotate_new_session(client):
@@ -172,6 +173,8 @@ def test_rotate_new_session(client):
     assert len(data['data']['csrf']) == 64
     assert data['data']['a'] == 'b'
 
-    db_d = client.application.redis.hgetall('session:{0}'.format(data['sid']))
-    assert len(db_d[b'csrf']) == 64
-    assert db_d[b'a'] == b'b'
+    sid = data['sid']
+    session_data = client.application.redis.get('session:{0}'.format(sid))
+    db_d = json.loads(session_data.decode())
+    assert len(db_d['csrf']) == 64
+    assert db_d['a'] == 'b'

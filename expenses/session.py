@@ -3,20 +3,24 @@
 
 from datetime import datetime, timedelta
 from flask.sessions import SessionInterface, SessionMixin
+from json import dumps, loads
+from werkzeug.datastructures import CallbackDict
 from .util import LazyObject, random_string
 
 
-class RedisSession(dict, SessionMixin):
+class RedisSession(CallbackDict, SessionMixin):
     """The session object."""
 
     def __init__(self, initial=None, sid=None, new=None):
+        def on_update(self):
+            self.modified = True
         if initial is None:
             initial = {}
-        dict.__init__(self, initial)
+        CallbackDict.__init__(self, initial, on_update)
         self.sid = sid
         self.old_sid = None
         self.new = new
-        self.modified_keys = set()
+        self.modified = False
 
     def init_data(self):
         """Create a random session key and CSRF token."""
@@ -29,12 +33,6 @@ class RedisSession(dict, SessionMixin):
             self.old_sid = self.sid
         self.init_data()
 
-    def __setitem__(self, key, value):
-        """Change the value, and record the change."""
-        self.modified = True
-        self.modified_keys.add(key)
-        return super(RedisSession, self).__setitem__(key, value)
-
 
 class RedisSessionInterface(SessionInterface):
 
@@ -44,12 +42,10 @@ class RedisSessionInterface(SessionInterface):
         """Attempt to load the session from a cookie, or create one."""
         sid = request.cookies.get(app.session_cookie_name)
         if sid:
-                data = app.redis.hgetall(self.redis_key(sid))
-                if data:
-                    initial = {}
-                    for d in data:
-                        initial[d.decode()] = data[d].decode()
-                    return self.session_class(initial=initial, sid=sid)
+            data = app.redis.get(self.redis_key(sid))
+            if data:
+                initial = loads(data.decode())
+                return self.session_class(initial=initial, sid=sid)
         session = self.session_class(new=True)
         session.init_data()
         return session
@@ -77,12 +73,12 @@ class RedisSessionInterface(SessionInterface):
         redis_key = self.redis_key(session.sid)
         redis_exp = self.get_session_lifetime(app, session)
         expire_seconds = redis_exp.days * 60 * 60 * 24 + redis_exp.seconds
-        changed_data = dict((k, session.get(k)) for k in session.modified_keys)
         if session.old_sid:
             app.redis.rename(self.redis_key(session.old_sid), redis_key)
-        if changed_data:
-            app.redis.hmset(redis_key, changed_data)
-        app.redis.expire(redis_key, expire_seconds)
+        if session.modified:
+            app.redis.setex(redis_key, expire_seconds, dumps(dict(session)))
+        else:
+            app.redis.expire(redis_key, expire_seconds)
 
         cookie_exp = self.get_expiration_time(app, session)
         secure = self.get_cookie_secure(app)
