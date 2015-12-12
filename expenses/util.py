@@ -9,7 +9,7 @@ import os
 
 class LazyObject(object):
 
-    """Lazily call a factory to create an object"""
+    """Lazily call a factory to create an object."""
 
     def __init__(self, init):
         self._init = init
