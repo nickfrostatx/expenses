@@ -2,6 +2,7 @@
 """Utility functions."""
 
 from base64 import urlsafe_b64encode
+from flask import request, session, abort
 from functools import wraps
 import operator
 import os
@@ -51,6 +52,17 @@ class LazyObject(object):
         if self.instantiated:
             return repr(self._wrapped)
         return '<LazyObject wrapping {0}>'.format(repr(self._init))
+
+
+def check_csrf(fn):
+    @wraps(fn)
+    def inner(*a, **kw):
+        token = request.form.get('token')
+        print(request.form)
+        if not token or token != session['csrf']:
+            abort(403)
+        return fn(*a, **kw)
+    return inner
 
 
 def random_string(size):

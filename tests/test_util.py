@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 """Test utility functions."""
 
-from expenses.util import LazyObject, random_string
+from expenses.util import LazyObject, check_csrf, random_string
+import flask
 import pytest
 
 
@@ -53,6 +54,42 @@ def test_lazy():
     obj.clear()
     assert len(obj) == 0
     assert len(d) == 0
+
+
+def test_check_csrf():
+    app = flask.Flask(__name__)
+
+    class FakeSessionInterface(flask.sessions.SessionInterface):
+
+        def open_session(self, app, request):
+            return {'csrf': 'somecsrf'}
+
+        def save_session(self, app, session, response):
+            pass
+
+    app.session_interface = FakeSessionInterface()
+
+    @app.route('/', methods=['POST'])
+    @check_csrf
+    def home():
+        return 'abc'
+
+    with app.test_client() as client:
+        headers = {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        }
+
+        rv = client.post('/')
+        assert rv.status_code == 403
+
+        rv = client.post('/', headers=headers, data='token=')
+        assert rv.status_code == 403
+
+        rv = client.post('/', headers=headers, data='token=fake')
+        assert rv.status_code == 403
+
+        rv = client.post('/', headers=headers, data='token=somecsrf')
+        assert rv.status_code == 200
 
 
 def test_random_string():
