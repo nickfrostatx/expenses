@@ -7,7 +7,7 @@ from flask import Blueprint, request, session, flash, url_for, redirect, \
 from sqlalchemy.exc import IntegrityError
 from werkzeug.security import safe_str_cmp
 from .model import db, User
-from .util import check_csrf
+from .util import check_csrf, require_auth, require_noauth
 
 
 views = Blueprint('views', __name__, template_folder='templates')
@@ -19,16 +19,19 @@ def home():
 
 
 @views.route('/login/')
+@require_noauth
 def login_page():
     return render_template('views/login.html')
 
 
 @views.route('/signup/')
+@require_noauth
 def signup_page():
     return render_template('views/signup.html')
 
 
 @views.route('/auth', methods=['POST'])
+@require_noauth
 @check_csrf
 def auth():
     username = request.form.get('username')
@@ -48,6 +51,7 @@ def auth():
 
 
 @views.route('/users', methods=['POST'])
+@require_noauth
 @check_csrf
 def signup():
     valid = True
@@ -72,6 +76,7 @@ def signup():
 
 
 @views.route('/logout')
+@require_auth
 @check_csrf
 def logout():
     session.clear()

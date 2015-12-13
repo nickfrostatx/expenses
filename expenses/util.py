@@ -2,7 +2,7 @@
 """Utility functions."""
 
 from base64 import urlsafe_b64encode
-from flask import request, session, abort
+from flask import request, session, abort, redirect, url_for
 from functools import wraps
 import operator
 import os
@@ -60,6 +60,24 @@ def check_csrf(fn):
         token = request.form.get('token') or request.args.get('token')
         if not token or token != session['csrf']:
             abort(403)
+        return fn(*a, **kw)
+    return inner
+
+
+def require_noauth(fn):
+    @wraps(fn)
+    def inner(*a, **kw):
+        if session.authed:
+            return redirect('/', code=303)
+        return fn(*a, **kw)
+    return inner
+
+
+def require_auth(fn):
+    @wraps(fn)
+    def inner(*a, **kw):
+        if not session.authed:
+            return redirect(url_for('.login'), code=303)
         return fn(*a, **kw)
     return inner
 
