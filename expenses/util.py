@@ -58,7 +58,6 @@ def check_csrf(fn):
     @wraps(fn)
     def inner(*a, **kw):
         token = request.form.get('token')
-        print(request.form)
         if not token or token != session['csrf']:
             abort(403)
         return fn(*a, **kw)
