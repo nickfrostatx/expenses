@@ -39,7 +39,7 @@ def auth():
         if safe_str_cmp(pw_hash, user.password):
             session.rotate()
             session['user'] = user.id
-            return redirect(request.args.get('next') or '/', code=303)
+            return redirect('/', code=303)
         else:
             flash('Incorrect password', 'error')
     else:
@@ -69,3 +69,10 @@ def signup():
         except IntegrityError:
             flash('That username already exists')
     return redirect(url_for('.signup_page') ,code=303)
+
+
+@views.route('/logout')
+@check_csrf
+def logout():
+    session.clear()
+    return redirect('/')

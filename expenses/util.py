@@ -57,7 +57,7 @@ class LazyObject(object):
 def check_csrf(fn):
     @wraps(fn)
     def inner(*a, **kw):
-        token = request.form.get('token')
+        token = request.form.get('token') or request.args.get('token')
         if not token or token != session['csrf']:
             abort(403)
         return fn(*a, **kw)

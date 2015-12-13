@@ -1,6 +1,9 @@
 {% extends "lib/base.html" %}
 
 {% block body %}
+  {%- if 'user' in session %}
+    <a href="{{ url_for('.logout', token=session.csrf) }}">Logout</a>
+  {%- endif %}
   {%- with messages = get_flashed_messages() %}
     {%- if messages %}
       {%- for message in messages %}
