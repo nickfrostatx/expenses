@@ -33,6 +33,11 @@ class RedisSession(CallbackDict, SessionMixin):
             self.old_sid = self.sid
         self.init_data()
 
+    @property
+    def authed(self):
+        """Return whether the user is authenticated."""
+        return 'user' in self
+
 
 class RedisSessionInterface(SessionInterface):
 
