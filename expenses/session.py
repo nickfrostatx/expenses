@@ -76,7 +76,8 @@ class RedisSessionInterface(SessionInterface):
         if session.old_sid:
             app.redis.delete(self.redis_key(session.old_sid))
         if session.modified:
-            app.redis.setex(redis_key, expire_seconds, dumps(dict(session)))
+            data = dumps(dict(session), separators=(',', ':'))
+            app.redis.setex(redis_key, expire_seconds, data)
         else:
             app.redis.expire(redis_key, expire_seconds)
 
