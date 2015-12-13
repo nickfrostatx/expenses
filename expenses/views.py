@@ -68,7 +68,7 @@ def signup():
             return redirect('/', code=303)
         except IntegrityError:
             flash('That username already exists')
-    return redirect(url_for('.signup_page') ,code=303)
+    return redirect(url_for('.signup_page'), code=303)
 
 
 @views.route('/logout')
