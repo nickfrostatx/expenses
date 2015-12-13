@@ -60,7 +60,7 @@ def signup():
             flash(field.capitalize() + ' is required', 'error')
             valid = False
     if valid:
-        name = request.form.get('user')
+        name = request.form.get('name')
         username = request.form.get('username')
         password = request.form.get('password')
         pw_hash = hashpw(password.encode(), gensalt()).decode()
