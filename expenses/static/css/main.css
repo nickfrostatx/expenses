@@ -5,3 +5,8 @@ html {
 .err-code, .err-msg {
     text-align: center;
 }
+
+label {
+    display: inline-block;
+    width: 80px;
+}

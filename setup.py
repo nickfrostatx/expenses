@@ -31,6 +31,7 @@ setup(
     install_requires=[
         'Flask',
         'Flask-SQLAlchemy',
+        'bcrypt',
         'redis',
     ],
     extras_require={

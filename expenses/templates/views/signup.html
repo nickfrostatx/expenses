@@ -1,0 +1,14 @@
+{% extends "lib/page.html" %}
+
+{% block content %}
+    <form method="post" action="{{ url_for('.signup') }}">
+      <input type="hidden" name="token" value="{{ session.csrf }}">
+      <label for="name">Name</label>
+      <input type="text" name="name" id="name" placeholder="Taylor Swift" autofocus><br />
+      <label for="username">Username</label>
+      <input type="text" name="username" id="username" placeholder="tswizzle" autofocus><br />
+      <label for="password">Password</label>
+      <input type="password" name="password" id="password" placeholder="SeCuR3 p4ssw0rd"><br />
+      <input type="submit" value="Sign me up">
+    </form>
+{%- endblock %}
