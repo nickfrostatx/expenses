@@ -30,6 +30,7 @@ setup(
     },
     install_requires=[
         'Flask',
+        'Flask-SQLAlchemy',
         'redis',
     ],
     extras_require={

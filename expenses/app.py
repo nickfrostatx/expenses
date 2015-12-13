@@ -14,6 +14,9 @@ def create_app():
     # TODO: do some config
     app.redis = StrictRedis()
 
+    from .model import db
+    db.init_app(app)
+
     from .error import register_error_handler, html_handler
     register_error_handler(app, html_handler)
 
