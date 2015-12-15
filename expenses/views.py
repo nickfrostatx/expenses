@@ -2,13 +2,14 @@
 """Main HTML views."""
 
 from bcrypt import gensalt, hashpw
+from datetime import datetime, date
 from flask import Blueprint, request, session, flash, url_for, redirect, \
-                  render_template
+                  jsonify, render_template
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.sql import func
 from werkzeug.security import safe_str_cmp
 from .model import db, User, Purchase
-from .util import check_csrf, require_auth, require_noauth
+from .util import check_csrf, require_auth, require_noauth, price_filter
 
 
 views = Blueprint('views', __name__, template_folder='templates')
@@ -26,6 +27,25 @@ def home():
     purchases = list(db.session.query(Purchase).order_by(Purchase.date.desc()).limit(25))
     return render_template('views/home.html', users=users, purchases=purchases,
                            avg=avg, today=date.today())
+
+
+@views.route('/expenses', methods=['GET'])
+def get_expenses():
+    try:
+        page = int(request.args.get('page', '0'))
+    except ValueError:
+        return jsonify({'msg': 'Invalid page number.'}), 404
+    if page < 0:
+        return jsonify({'msg': 'Invalid page number.'}), 404
+    purchases = db.session.query(Purchase).order_by(Purchase.date.desc()).slice(page * 25, (page + 1) * 25)
+    if not purchases:
+        return jsonify({'msg': 'Invalid page number.'}), 404
+    return jsonify({'expenses': [
+        {
+            'name': p.name,
+            'price': price_filter(p.cost),
+        } for p in purchases
+    ]})
 
 
 @views.route('/expenses', methods=['POST'])
