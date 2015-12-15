@@ -1,5 +1,17 @@
 {% extends "lib/page.html" %}
 
 {% block content %}
-    <h1>It works!</h1>
+    <h1>Expenses</h1>
+    {%- for user in users %}
+    <div class="user">{{ user[0] }} {{ (user[1] - avg) | price}}</div>
+    {%- endfor %}
+    <form method="POST" action="/expenses">
+        <input type="hidden" name="token" value="{{ session.csrf }}">
+        <input name="name" type="text" placeholder="Trader Joe's" value="{{ request.args.expense_name }}"{% if not request.args.expense_name %} autofocus{% endif %}>
+        $<input name="price" type="text" placeholder="34.17"{% if request.args.expense_name %} autofocus{% endif %}>
+        <input type="submit">
+    </form>
+    {%- for purchase in purchases %}
+    <div class="expense">{{ purchase.user.name }} {{ purchase.name }} {{ purchase.cost | price}}</div>
+    {%- endfor %}
 {%- endblock %}
