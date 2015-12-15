@@ -5,8 +5,9 @@ from bcrypt import gensalt, hashpw
 from flask import Blueprint, request, session, flash, url_for, redirect, \
                   render_template
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.sql import func
 from werkzeug.security import safe_str_cmp
-from .model import db, User
+from .model import db, User, Purchase
 from .util import check_csrf, require_auth, require_noauth
 
 
@@ -15,7 +16,42 @@ views = Blueprint('views', __name__, template_folder='templates')
 
 @views.route('/')
 def home():
-    return render_template('views/home.html')
+    query = db.session.query(User.name, func.sum(Purchase.cost) \
+        .label('total')).outerjoin(Purchase).group_by(User)
+    users = [(r.name, int(r.total or 0)) for r in query]
+    if users:
+        avg = float(sum(user[1] for user in users)) / len(users)
+    else:
+        avg = 0
+    purchases = db.session.query(Purchase).limit(25)
+    return render_template('views/home.html', users=users, purchases=purchases,
+                           avg=avg)
+
+
+@views.route('/expenses', methods=['POST'])
+@require_auth
+@check_csrf
+def add_expense():
+    valid = True
+    name = request.form.get('name')
+    if not name:
+        flash('A name is required', 'error')
+        valid = False
+    try:
+        price = int(float(request.form.get('price')) * 100)
+        if price <= 0:
+            flash('The price must be greater than $0.00', 'error')
+            valid = False
+    except (TypeError, ValueError):
+        flash('Expected a valid price', 'error')
+        valid = False
+    if valid:
+        purchase = Purchase(name=name, cost=price, user_id=session['user'])
+        db.session.add(purchase)
+        db.session.commit()
+        return redirect(url_for('.home'), code=303)
+    else:
+        return redirect(url_for('.home', expense_name=name), code=303)
 
 
 @views.route('/login/')
