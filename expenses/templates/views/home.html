@@ -1,22 +1,24 @@
 {% extends "lib/page.html" %}
 
 {% block content %}
-  {%- if session.authed %}
-    <a href="{{ url_for('.logout', token=session.csrf) }}">Sign out</a>
-  {%- else %}
-    <a href="{{ url_for('.login_page') }}">Sign in</a>
-  {%- endif %}
-    <h1>Expenses</h1>
+    <div class="header">
+      <a class="logo" href="{{ url_for('.home') }}">Expenses</a>
+    {%- if session.authed %}
+      <a class="login" href="{{ url_for('.logout', token=session.csrf) }}">Sign out</a>
+    {%- else %}
+      <a class="login" href="{{ url_for('.login_page') }}">Sign in</a>
+    {%- endif %}
+    </div>
     {%- for user in users %}
     <div class="user">{{ user[0] }} {{ (user[1] - avg) | price}}</div>
     {%- endfor %}
     <form method="POST" action="/expenses">
-        <input type="hidden" name="token" value="{{ session.csrf }}">
-        <input name="name" type="text" placeholder="Trader Joe's" value="{{ request.args.expense_name }}"{% if not request.args.expense_name %} autofocus{% endif %}>
-        $<input name="price" type="text" placeholder="34.17"{% if request.args.expense_name %} autofocus{% endif %}>
-        <input type="submit">
+      <input type="hidden" name="token" value="{{ session.csrf }}">
+      <input name="name" type="text" placeholder="Trader Joe's" value="{{ request.args.expense_name }}"{% if not request.args.expense_name %} autofocus{% endif %}>
+      $<input name="price" type="text" placeholder="34.17"{% if request.args.expense_name %} autofocus{% endif %}>
+      <input type="submit">
     </form>
-    {%- for purchase in purchases %}
+  {%- for purchase in purchases %}
     <div class="expense">{{ purchase.user.name }} {{ purchase.name }} {{ purchase.cost | price}}</div>
-    {%- endfor %}
+  {%- endfor %}
 {%- endblock %}
