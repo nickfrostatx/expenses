@@ -36,27 +36,12 @@
             </div>
           </div>
         </div>
-        <input type="submit" style="display:none">
+        <input class="hidden" type="submit">
       </form>
-    {%- if purchases %}
-    {%- set last_date = purchases[0].date | date %}
-      <div class="date">{{ last_date }}</div>
-      <div class="box table">
-      {%- for purchase in purchases %}
-      {%- if purchase.date | date != last_date %}
-      {%- set last_date = purchase.date | date %}
-      </div>
-      <div class="date">{{ last_date }}</div>
-      <div class="box table">
-      {%- endif %}
-        <div class="row">
-          <div class="cell user">{{ purchase.user.name }}
-          </div><div class="cell name">{{ purchase.name }}
-          </div><div class="cell price">{{ purchase.cost | price}}</div>
-        </div>
-      {%- endfor %}
-      </div>
-      {% endif %}
-      <div id="loading">Loading more...</div>
     </div>
+    <div id="loading">Loading more...</div>
+    <script>
+      var data = {{ purchases | tojson | safe }};
+    </script>
+    <script src="/static/js/main.js"></script>
 {%- endblock %}

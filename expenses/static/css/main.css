@@ -108,7 +108,7 @@ input, button {
 #loading {
     color: #777;
     font-size: 14px;
-    margin: 40px 0;
+    padding: 40px 0;
     text-align: center;
 }
 

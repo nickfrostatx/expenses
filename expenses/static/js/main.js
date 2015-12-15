@@ -43,11 +43,80 @@ function request(method, url, data, success, error) {
     return xhr;
 }
 
+function createDiv(cls, text) {
+    var div = document.createElement('div');
+    div.className = cls;
+    if (text !== undefined) {
+        div.textContent = text;
+    };
+    return div;
+}
+
+var addExpense = (function() {
+    var currentTable = null;
+    var lastExpenseDate = null;
+
+    return function(expense, container) {
+        if (expense.date != lastExpenseDate) {
+            lastExpenseDate = expense.date;
+            container.appendChild(createDiv('date', expense.date));
+            currentTable = createDiv('box table');
+            container.appendChild(currentTable);
+        };
+
+        var row = createDiv('row');
+        row.appendChild(createDiv('cell user', expense.user));
+        row.appendChild(createDiv('cell name', expense.name));
+        row.appendChild(createDiv('cell price', expense.price));
+        currentTable.appendChild(row);
+    };
+})();
+
 window.onload = function() {
     var newPurchase = document.getElementById('new-purchase');
     var nameField = newPurchase.name;
     document.getElementById('plus').addEventListener('click', function() {
         newPurchase.classList.remove('hidden');
         nameField.focus();
+    });
+
+    var addExpenses = (function() {
+        var container = document.getElementsByClassName('container')[0];
+        return function(data) {
+            for (var i = 0; i < data.expenses.length; i++) {
+                addExpense(data.expenses[i], container);
+            };
+        };
+    })();
+
+    addExpenses(data);
+
+    var loadMsg = document.getElementById('loading');
+    var loadMoreExpenses = (function() {
+        // This closure locks when called, and releases on a successful response
+        // If the response errors, the lock is never released
+        var page = 1;
+        var loading = false;
+
+        return function() {
+            if (!loading) {
+                loading = true;
+                request('GET', '/expenses?page=' + page++, null, function(d) {
+                    loading = false;
+                    addExpenses(d);
+                }, function(msg) {
+                    loadMsg.textContent = 'Error loading more';
+                    console.error(msg);
+                });
+            };
+        };
+    })();
+
+    window.addEventListener('scroll', function() {
+        var toBottom = document.body.offsetHeight - window.pageYOffset
+            - window.innerHeight;
+        if (toBottom < 200) {
+            loadMoreExpenses();
+        };
     });
 };

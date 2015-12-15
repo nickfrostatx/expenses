@@ -9,10 +9,25 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.sql import func
 from werkzeug.security import safe_str_cmp
 from .model import db, User, Purchase
-from .util import check_csrf, require_auth, require_noauth, price_filter
+from .util import check_csrf, require_auth, require_noauth, date_filter, \
+                  price_filter
 
 
 views = Blueprint('views', __name__, template_folder='templates')
+
+
+def purchases_obj(purchase_query):
+    data = {
+        'expenses': [{
+            'user': p.user.name,
+            'name': p.name,
+            'price': price_filter(p.cost),
+            'date': date_filter(p.date),
+        } for p in purchase_query],
+    }
+    if not data['expenses']:
+        return None
+    return data
 
 
 @views.route('/')
@@ -24,9 +39,11 @@ def home():
         avg = float(sum(user[1] for user in users)) / len(users)
     else:
         avg = 0
-    purchases = list(db.session.query(Purchase).order_by(Purchase.date.desc()).limit(25))
-    return render_template('views/home.html', users=users, purchases=purchases,
-                           avg=avg, today=date.today())
+    purchases = db.session.query(Purchase).order_by(Purchase.date.desc()) \
+        .limit(25)
+    return render_template('views/home.html', users=users, avg=avg,
+                           purchases=purchases_obj(purchases),
+                           today=date.today())
 
 
 @views.route('/expenses', methods=['GET'])
@@ -37,15 +54,12 @@ def get_expenses():
         return jsonify({'msg': 'Invalid page number.'}), 404
     if page < 0:
         return jsonify({'msg': 'Invalid page number.'}), 404
-    purchases = db.session.query(Purchase).order_by(Purchase.date.desc()).slice(page * 25, (page + 1) * 25)
-    if not purchases:
+    purchases = db.session.query(Purchase).order_by(Purchase.date.desc()) \
+        .slice(page * 25, (page + 1) * 25)
+    data = purchases_obj(purchases)
+    if not data:
         return jsonify({'msg': 'Invalid page number.'}), 404
-    return jsonify({'expenses': [
-        {
-            'name': p.name,
-            'price': price_filter(p.cost),
-        } for p in purchases
-    ]})
+    return jsonify(data)
 
 
 @views.route('/expenses', methods=['POST'])
