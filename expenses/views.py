@@ -81,9 +81,11 @@ def auth():
             return redirect(url_for('.home'), code=303)
         else:
             flash('Incorrect password', 'error')
+            return redirect(url_for('.login_page', username=username), code=303)
     else:
         flash('No such user', 'error')
-    return redirect(url_for('.login_page', username=username), code=303)
+        return redirect(url_for('.login_page'), code=303)
+
 
 
 @views.route('/users', methods=['POST'])
