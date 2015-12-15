@@ -23,6 +23,9 @@ def create_app():
     from .session import LazyRedisSessionInterface
     app.session_interface = LazyRedisSessionInterface()
 
+    from .util import price_filter
+    app.jinja_env.filters['price'] = price_filter
+
     from .views import views
     app.register_blueprint(views)
 

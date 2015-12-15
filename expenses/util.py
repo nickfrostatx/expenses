@@ -81,6 +81,8 @@ def require_auth(fn):
         return fn(*a, **kw)
     return inner
 
+def price_filter(amount):
+    return u'${0:,.2f}'.format(amount / 100.0)
 
 def random_string(size):
     """Generate a random base64 string from urandom."""
