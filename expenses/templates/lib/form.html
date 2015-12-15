@@ -1,0 +1,23 @@
+{% extends "lib/page.html" %}
+
+{% block content %}
+    <div class="auth box">
+      <div class="auth-title">{% block title %}{% endblock %}</div>
+    {%- with messages = get_flashed_messages(with_categories=True) %}
+      {%- if messages %}
+      <div class="messages">
+        {%- for category, message in messages %}
+        <div class="message{% if category != 'message' %} {{ category }}{% endif %}">{{ message }}</div>
+        {%- endfor %}
+      </div>
+      {%- endif %}
+    {%- endwith %}
+      <form method="post" action="{% block action %}{% endblock %}">
+        <input type="hidden" name="token" value="{{ session.csrf }}">
+        {%- block form %}{% endblock %}
+      </form>
+      <div class="auth-foot">
+        {%- block foot %}{% endblock %}
+      </div>
+    </div>
+{%- endblock %}
