@@ -115,7 +115,7 @@ def signup():
             session['user'] = user.id
             return redirect(url_for('.home'), code=303)
         except IntegrityError:
-            flash('That username already exists')
+            flash('That username already exists', 'error')
     return redirect(url_for('.signup_page'), code=303)
 
 
