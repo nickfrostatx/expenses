@@ -1,13 +1,16 @@
-{% extends "lib/page.html" %}
+{% extends "lib/form.html" %}
 
-{% block content %}
-    <form method="post" action="{{ url_for('.auth') }}">
-      <input type="hidden" name="token" value="{{ session.csrf }}">
-      <label for="username">Username</label>
-      <input type="text" name="username" placeholder="tswizzle"{% if not request.args.username %} autofocus{% endif %} value="{{ request.args.username }}"><br />
-      <label for="password">Password</label>
-      <input type="password" name="password" placeholder="SeCuR3 p4ssw0rd"{% if request.args.username %} autofocus{% endif %}><br />
-      <input type="submit" value="Login">
-    </form>
-    Or, <a href="{{ url_for('.signup_page') }}">Sign up</a>
+{% block title %}Sign in to Your Account{% endblock %}
+
+{% block action %}{{ url_for('.auth') }}{% endblock %}
+
+{% block form %}
+        <input type="hidden" name="token" value="{{ session.csrf }}">
+        <input type="text" name="username" placeholder="Username"{% if not request.args.username %} autofocus{% endif %} value="{{ request.args.username }}"><br />
+        <input type="password" name="password" placeholder="Password"{% if request.args.username %} autofocus{% endif %}><br />
+        <input type="submit" value="Sign in">
+{%- endblock %}
+
+{% block foot %}
+        <a href="{{ url_for('.signup_page') }}">Create an account</a>
 {%- endblock %}

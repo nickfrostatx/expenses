@@ -1,4 +1,5 @@
 html {
+    background-color: #eeeeee;
     font-family: HelveticaNeue, Helvetica, Arial, sans-serif;
 }
 
@@ -6,7 +7,86 @@ html {
     text-align: center;
 }
 
-label {
-    display: inline-block;
-    width: 80px;
+.message.error {
+    color: #B71C1C;
+}
+
+.box {
+    border-radius: 2px;
+    box-shadow: 0 0 6px #bfbfbf;
+}
+
+.auth {
+    background-color: #fff;
+    margin: 100px auto 0;
+    padding: 0 0 10px;
+    width: 350px;
+}
+
+.auth-title {
+    background-color: #009688;
+    border-radius: 2px 2px 0 0;
+    color: #fff;
+    font-size: 18px;
+    height: 40px;
+    margin-bottom: 10px;
+    padding-top: 20px;
+    text-align: center;
+}
+
+.auth > .messages {
+    line-height: 22px;
+    padding: 10px 25px 5px;
+}
+
+.auth > form {
+    padding: 0 25px;
+    text-align: right;
+}
+
+.auth > form > input[type=text], .auth > form > input[type=password] {
+    background-color: transparent;
+    border: 0;
+    border-bottom: 1px solid #cecece;
+    font-size: 16px;
+    padding-bottom: 13px;
+    margin: 19px 0 10px;
+    outline: 0;
+    width: 100%;
+}
+
+.auth > form > input[type=text]:focus, .auth > form > input[type=password]:focus {
+    border-bottom: 2px solid #009688;
+    padding-bottom: 12px;
+}
+
+.auth > form > input[type=submit] {
+    background-color: transparent;
+    border: 0;
+    color: #009688;
+    cursor: pointer;
+    font-size: 17px;
+    font-weight: bold;
+    margin: 10px 0 20px;
+    padding: 0;
+}
+
+.auth > form > input[type=submit]:hover {
+    text-decoration: underline;
+}
+
+.auth-foot {
+    border-top: 1px solid #eeeeee;
+    padding: 16px 0 6px;
+    text-align: center;
+}
+
+.auth-foot > a {
+    color: #999;
+    font-size: 14px;
+    text-decoration: none;
+}
+
+.auth-foot > a:hover {
+    text-decoration: underline;
 }
