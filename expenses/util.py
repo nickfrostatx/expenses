@@ -2,6 +2,7 @@
 """Utility functions."""
 
 from base64 import urlsafe_b64encode
+from datetime import date
 from flask import request, session, abort, redirect, url_for
 from functools import wraps
 import operator
@@ -80,6 +81,20 @@ def require_auth(fn):
             return redirect(url_for('.login_page'), code=303)
         return fn(*a, **kw)
     return inner
+
+def date_filter(d):
+    today = date.today()
+    if d == today:
+        return 'Today'
+    elif (today - d).days == 1:
+        return 'Yesterday'
+    elif d.year == today.year and d.month == today.month:
+        return 'This month'
+    elif d.year == today.year or (d.year == today.year - 1 and
+                                  d.month > today.month):
+        return '{0:%B}'.format(d)
+    else:
+        return '{0:%B %Y}'.format(d)
 
 def price_filter(amount):
     return u'${0:,.2f}'.format(amount / 100.0)
