@@ -77,7 +77,7 @@ def require_auth(fn):
     @wraps(fn)
     def inner(*a, **kw):
         if not session.authed:
-            return redirect(url_for('.login'), code=303)
+            return redirect(url_for('.login_page'), code=303)
         return fn(*a, **kw)
     return inner
 
