@@ -23,9 +23,9 @@ def home():
         avg = float(sum(user[1] for user in users)) / len(users)
     else:
         avg = 0
-    purchases = db.session.query(Purchase).limit(25)
+    purchases = list(db.session.query(Purchase).order_by(Purchase.date.desc()).limit(25))
     return render_template('views/home.html', users=users, purchases=purchases,
-                           avg=avg)
+                           avg=avg, today=date.today())
 
 
 @views.route('/expenses', methods=['POST'])
@@ -45,13 +45,19 @@ def add_expense():
     except (TypeError, ValueError):
         flash('Expected a valid price', 'error')
         valid = False
+    try:
+        p_date = datetime.strptime(request.form.get('date'), '%m/%d/%Y').date()
+    except (TypeError, ValueError):
+        flash('Expected a valid date', 'error')
+        valid = False
     if valid:
-        purchase = Purchase(name=name, cost=price, user_id=session['user'])
+        purchase = Purchase(name=name, cost=price, date=p_date,
+                            user_id=session['user'])
         db.session.add(purchase)
         db.session.commit()
         return redirect(url_for('.home'), code=303)
     else:
-        return redirect(url_for('.home', expense_name=name), code=303)
+        return redirect(url_for('.home'), code=303)
 
 
 @views.route('/login/')
