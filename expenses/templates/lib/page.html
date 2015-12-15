@@ -4,10 +4,10 @@
   {%- if session.authed %}
     <a href="{{ url_for('.logout', token=session.csrf) }}">Logout</a>
   {%- endif %}
-  {%- with messages = get_flashed_messages() %}
+  {%- with messages = get_flashed_messages(with_categories=True) %}
     {%- if messages %}
-      {%- for message in messages %}
-    <div class="message">{{ message }}</div>
+      {%- for category, message in messages %}
+    <div class="message{% if category != 'message' %} {{ category }}{% endif %}">{{ message }}</div>
       {%- endfor %}
     {%- endif %}
   {%- endwith %}
