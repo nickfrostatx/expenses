@@ -9,16 +9,54 @@
       <a class="login" href="{{ url_for('.login_page') }}">Sign in</a>
     {%- endif %}
     </div>
-    {%- for user in users %}
-    <div class="user">{{ user[0] }} {{ (user[1] - avg) | price}}</div>
-    {%- endfor %}
-    <form method="POST" action="/expenses">
-      <input type="hidden" name="token" value="{{ session.csrf }}">
-      <input name="name" type="text" placeholder="Trader Joe's" value="{{ request.args.expense_name }}"{% if not request.args.expense_name %} autofocus{% endif %}>
-      $<input name="price" type="text" placeholder="34.17"{% if request.args.expense_name %} autofocus{% endif %}>
-      <input type="submit">
-    </form>
-  {%- for purchase in purchases %}
-    <div class="expense">{{ purchase.user.name }} {{ purchase.name }} {{ purchase.cost | price}}</div>
-  {%- endfor %}
+    <button id="plus">+</button>
+    <div class="container">
+      <!--
+      <div class="box table">
+      {%- for user in users %}
+        <div class="row">
+          <div class="cell">{{ user[0] }}</div>
+          <div class="cell">{{ (user[1] - avg) | price}}</div>
+        </div>
+      {%- endfor %}
+      </div>
+      -->
+      <form id="new-purchase" class="hidden" method="POST" action="/expenses">
+        <input type="hidden" name="token" value="{{ session.csrf }}">
+        <div class="box table">
+          <div class="row">
+            <div class="cell">
+              <input name="name" type="text" placeholder="Trader Joe's">
+            </div>
+            <div class="cell">
+              $<input name="price" type="text" placeholder="34.17">
+            </div>
+            <div class="cell">
+              <input name="date" type="text" placeholder="{{ '{0:%m/%d/%Y}'.format(today) }}">
+            </div>
+          </div>
+        </div>
+        <input type="submit" style="display:none">
+      </form>
+    {%- if purchases %}
+    {%- set last_date = purchases[0].date | date %}
+      <div class="date">{{ last_date }}</div>
+      <div class="box table">
+      {%- for purchase in purchases %}
+      {%- if purchase.date | date != last_date %}
+      {%- set last_date = purchase.date | date %}
+      </div>
+      <div class="date">{{ last_date }}</div>
+      <div class="box table">
+      {%- endif %}
+        <div class="row">
+          <div class="cell user">{{ purchase.user.name }}
+          </div><div class="cell name">{{ purchase.name }}
+          </div><div class="cell price">{{ purchase.cost | price}}</div>
+        </div>
+      {%- endfor %}
+      </div>
+      {% endif %}
+      <div id="loading">Loading more...</div>
+    </div>
 {%- endblock %}

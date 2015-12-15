@@ -7,21 +7,20 @@ body {
     margin: 0;
 }
 
+input, button {
+    font-family: inherit;
+}
+
+.container {
+    margin: 20px 80px 0 40px;
+}
+
 .err-code, .err-msg {
     text-align: center;
 }
 
-.message.error {
-    color: #B71C1C;
-}
-
-.box {
-    border-radius: 2px;
-    box-shadow: 0 0 6px #bfbfbf;
-}
-
 .header {
-    background-color: #009688;
+    background-color: #4caf50;
     box-shadow: 0 0 13px #616161;
     padding: 16px 40px;
 }
@@ -40,15 +39,109 @@ body {
     text-decoration: none;
 }
 
-.auth {
+.box {
     background-color: #fff;
+    box-shadow: 0 2px 6px #bfbfbf;
+}
+
+.date {
+    color: #616161;
+    font-size: 14px;
+    margin: 20px 0 10px 20px;
+}
+
+.table {
+    color: #212121;
+    display: table;
+    font-size: 15px;
+    width: 100%;
+}
+
+.row {
+    padding: 10px 40px;
+}
+
+.row:not(:last-child) {
+    border-bottom: 1px solid #fcfcfc;
+}
+
+.row + .row {
+    border-top: 1px solid #e5e5e5;
+}
+
+.cell {
+    display: inline-block;
+}
+
+.cell.user {
+    width: 30%;
+}
+
+.cell.name {
+    width: 50%;
+}
+
+.cell.price {
+    text-align: right;
+    width: 20%;
+}
+
+.row input[type=text] {
+    background-color: transparent;
+    border: 0;
+    font-size: inherit;
+    outline: none;
+}
+
+.right {
+    text-align: right;
+}
+
+#new-purchase .row {
+    color: #999;
+}
+
+.hidden {
+    display: none;
+}
+
+#loading {
+    color: #777;
+    font-size: 14px;
+    margin: 40px 0;
+    text-align: center;
+}
+
+.plus-wrap {
+    padding: 20px 0 0;
+    height: 35px;
+}
+
+#plus {
+    background-color: #FF9800;
+    border-radius: 50%;
+    border: 0;
+    box-shadow: 0 4px 6px #aaa;
+    color: #fff;
+    cursor: pointer;
+    float: right;
+    font-size: 30px;
+    height: 57px;
+    outline: none;
+    margin: 20px 10px;
+    text-align: center;
+    width: 57px;
+}
+
+.auth {
+    border-radius: 2px;
     margin: 100px auto 0;
     padding: 0 0 10px;
     width: 350px;
 }
 
 .auth-title {
-    background-color: #009688;
+    background-color: #4caf50;
     border-radius: 2px 2px 0 0;
     color: #fff;
     font-size: 18px;
@@ -80,14 +173,14 @@ body {
 }
 
 .auth > form > input[type=text]:focus, .auth > form > input[type=password]:focus {
-    border-bottom: 2px solid #009688;
+    border-bottom: 2px solid #0f9d58;
     padding-bottom: 12px;
 }
 
 .auth > form > input[type=submit] {
     background-color: transparent;
     border: 0;
-    color: #009688;
+    color: #4caf50;
     cursor: pointer;
     font-size: 17px;
     font-weight: bold;
