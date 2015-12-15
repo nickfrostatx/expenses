@@ -22,3 +22,4 @@ class Purchase(db.Model):
     name = db.Column(db.String(254))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     cost = db.Column(db.Integer)
+    date = db.Column(db.Date)
