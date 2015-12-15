@@ -1,6 +1,11 @@
 {% extends "lib/page.html" %}
 
 {% block content %}
+  {%- if session.authed %}
+    <a href="{{ url_for('.logout', token=session.csrf) }}">Sign out</a>
+  {%- else %}
+    <a href="{{ url_for('.login_page') }}">Sign in</a>
+  {%- endif %}
     <h1>Expenses</h1>
     {%- for user in users %}
     <div class="user">{{ user[0] }} {{ (user[1] - avg) | price}}</div>
