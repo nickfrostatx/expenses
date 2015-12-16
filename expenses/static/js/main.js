@@ -111,7 +111,7 @@ window.onload = function() {
                         next = d.links.next;
                         onScroll();
                     }, function(msg) {
-                        loadMsg.textContent = 'Error loading more expenses';
+                        loadMsg.textContent = 'Error loading more transactions';
                         console.error(msg);
                     });
                 } else {
