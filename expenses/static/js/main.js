@@ -73,12 +73,15 @@ var addExpense = (function() {
 })();
 
 window.onload = function() {
-    var newPurchase = document.getElementById('new-purchase');
-    var nameField = newPurchase.name;
-    document.getElementById('plus').addEventListener('click', function() {
-        newPurchase.classList.remove('hidden');
-        nameField.focus();
-    });
+    var plus = document.getElementById('plus');
+    if (plus) {
+        var newPurchase = document.getElementById('new-purchase');
+        var nameField = newPurchase.name;
+        plus.addEventListener('click', function() {
+            newPurchase.classList.remove('hidden');
+            nameField.focus();
+        });
+    };
 
     var addExpenses = (function() {
         var container = document.getElementsByClassName('container')[0];
