@@ -2,7 +2,7 @@
 
 {% block body %}
     <div class="auth box">
-      <div class="auth-title">{% block title %}{% endblock %}</div>
+      <div class="auth-title">{% block form_title %}{% endblock %}</div>
     {%- with messages = get_flashed_messages(with_categories=True) %}
       {%- if messages %}
       <div class="messages">
