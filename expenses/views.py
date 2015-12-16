@@ -20,8 +20,9 @@ PER_PAGE = 50
 
 def purchases_obj(page):
     total_purchases = db.session.query(Purchase).count()
-    purchases = db.session.query(Purchase).order_by(Purchase.date.desc()) \
-        .slice(page * PER_PAGE, (page + 1) * PER_PAGE)
+    purchases = (db.session.query(Purchase)
+                 .order_by(Purchase.date.desc(), Purchase.id.desc())
+                 .slice(page * PER_PAGE, (page + 1) * PER_PAGE))
     data = {
         'expenses': [{
             'user': p.user.name,
