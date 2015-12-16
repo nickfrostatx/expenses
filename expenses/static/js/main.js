@@ -132,4 +132,8 @@ window.onload = function() {
 
     window.addEventListener('scroll', onScroll);
     onScroll();
+
+    if (data.expenses.length == 0) {
+        loadMsg.textContent = 'No transactions have been added yet!';
+    };
 };
