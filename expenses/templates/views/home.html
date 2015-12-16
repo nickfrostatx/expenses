@@ -9,7 +9,9 @@
       <a class="login" href="{{ url_for('.login_page') }}">Sign in</a>
     {%- endif %}
     </div>
+    {%- if session.authed %}
     <button id="plus">+</button>
+    {%- endif %}
     <div class="container">
       <!--
       <div class="box table">
