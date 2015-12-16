@@ -8,11 +8,16 @@ body {
 }
 
 input, button {
+    -webkit-appearance: none;
+    border-radius: 0;
+    padding: 0;
     font-family: inherit;
 }
 
-.container {
-    margin: 20px 40px;
+@media screen and (min-width: 769px) {
+    .container {
+        margin: 20px 40px;
+    }
 }
 
 .err-code, .err-msg {
@@ -52,11 +57,9 @@ input, button {
 
 .user-card {
     display: inline-block;
-    margin-right: 20px;
-    padding: 20px;
+    margin: 0 4% 0 15px;
+    padding: 20px 0;
     vertical-align: top;
-    width: 20%;
-    max-width: 200px;
 }
 
 .user-name {
@@ -156,7 +159,9 @@ input, button {
     font-size: 30px;
     height: 57px;
     outline: none;
-    margin: 20px 10px;
+    position: relative;
+    right: 10px;
+    top: 20px;
     text-align: center;
     width: 57px;
 }
