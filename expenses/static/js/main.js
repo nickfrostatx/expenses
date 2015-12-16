@@ -99,14 +99,14 @@ window.onload = function() {
         // This closure locks when called, and releases on a successful response
         // If the response has an error, the lock is never released
         var next = data.links.next;
-        var loading = false;
+        var lock = false;
 
         return function() {
-            if (!loading) {
+            if (!lock) {
                 if (next) {
-                    loading = true;
+                    lock = true;
                     request('GET', next, null, function(d) {
-                        loading = false;
+                        lock = false;
                         addExpenses(d);
                         next = d.links.next;
                         onScroll();
@@ -115,8 +115,14 @@ window.onload = function() {
                         console.error(msg);
                     });
                 } else {
-                    loadMsg.textContent = '';
-                    loading = true;
+                    if (data.expenses.length > 0) {
+                        loadMsg.textContent = '';
+                    } else {
+                        loadMsg.textContent =
+                            'No transactions have been added yet!';
+                    };
+                    // Block all future calls from hitting the request
+                    lock = true;
                 };
             };
         };
@@ -132,8 +138,4 @@ window.onload = function() {
 
     window.addEventListener('scroll', onScroll);
     onScroll();
-
-    if (data.expenses.length == 0) {
-        loadMsg.textContent = 'No transactions have been added yet!';
-    };
 };
