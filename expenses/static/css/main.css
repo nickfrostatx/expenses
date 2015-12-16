@@ -19,6 +19,9 @@ input, button {
     text-align: center;
 }
 
+
+/*** Header ***/
+
 .header {
     background-color: #4caf50;
     box-shadow: 0 0 13px #616161;
@@ -38,6 +41,9 @@ input, button {
     margin-top: 2px;
     text-decoration: none;
 }
+
+
+/*** Home page ***/
 
 .box {
     background-color: #fff;
@@ -132,6 +138,9 @@ input, button {
     text-align: center;
     width: 57px;
 }
+
+
+/*** Auth pages ***/
 
 .auth {
     border-radius: 2px;
