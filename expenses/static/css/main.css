@@ -12,7 +12,7 @@ input, button {
 }
 
 .container {
-    margin: 20px 80px 0 40px;
+    margin: 20px 40px;
 }
 
 .err-code, .err-msg {
@@ -48,6 +48,28 @@ input, button {
 .box {
     background-color: #fff;
     box-shadow: 0 2px 6px #bfbfbf;
+}
+
+.user-card {
+    display: inline-block;
+    margin-right: 20px;
+    padding: 20px;
+    vertical-align: top;
+    width: 20%;
+    max-width: 200px;
+}
+
+.user-name {
+    color: #333;
+    font-size: 20px;
+}
+
+.user-balance.positive {
+    color: #4caf50;
+}
+
+.user-balance.negative {
+    color: #ff9800;
 }
 
 .date {

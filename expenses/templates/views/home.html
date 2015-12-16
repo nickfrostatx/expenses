@@ -13,16 +13,12 @@
     <button id="plus">+</button>
     {%- endif %}
     <div class="container">
-      <!--
-      <div class="box table">
       {%- for user in users %}
-        <div class="row">
-          <div class="cell">{{ user[0] }}</div>
-          <div class="cell">{{ (user[1] - avg) | price}}</div>
-        </div>
-      {%- endfor %}
+      <div class="user-card">
+        <div class="user-name">{{ user[0] }}</div>
+        <div class="user-balance {{ 'positive' if user[1] > avg else 'negative' }}">{{ (user[1] - avg) | price}}</div>
       </div>
-      -->
+      {%- endfor %}
       <form id="new-purchase" class="hidden" method="POST" action="/expenses">
         <input type="hidden" name="token" value="{{ session.csrf }}">
         <div class="box table">

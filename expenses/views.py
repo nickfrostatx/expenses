@@ -41,7 +41,7 @@ def purchases_obj(page):
 @views.route('/')
 def home():
     query = db.session.query(User.name, func.sum(Purchase.cost).label('tot')) \
-        .outerjoin(Purchase).group_by(User)
+        .outerjoin(Purchase).group_by(User).order_by(User.name)
     users = [(r.name, int(r.tot or 0)) for r in query]
     if users:
         avg = float(sum(user[1] for user in users)) / len(users)
