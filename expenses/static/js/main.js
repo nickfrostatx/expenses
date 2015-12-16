@@ -102,19 +102,22 @@ window.onload = function() {
         var loading = false;
 
         return function() {
-            if (!loading && next) {
-                loading = true;
-                request('GET', next, null, function(d) {
-                    loading = false;
-                    addExpenses(d);
-                    next = d.links.next;
-                    onScroll();
-                }, function(msg) {
-                    loadMsg.textContent = 'Error loading more expenses';
-                    console.error(msg);
-                });
-            } else if (!next) {
-                loadMsg.textContent = '';
+            if (!loading) {
+                if (next) {
+                    loading = true;
+                    request('GET', next, null, function(d) {
+                        loading = false;
+                        addExpenses(d);
+                        next = d.links.next;
+                        onScroll();
+                    }, function(msg) {
+                        loadMsg.textContent = 'Error loading more expenses';
+                        console.error(msg);
+                    });
+                } else {
+                    loadMsg.textContent = '';
+                    loading = true;
+                };
             };
         };
     })();
