@@ -23,8 +23,7 @@ def create_app():
     from .session import LazyRedisSessionInterface
     app.session_interface = LazyRedisSessionInterface()
 
-    from .util import date_filter, price_filter
-    app.jinja_env.filters['date'] = date_filter
+    from .util import price_filter
     app.jinja_env.filters['price'] = price_filter
 
     from .views import views

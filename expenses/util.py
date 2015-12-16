@@ -82,7 +82,7 @@ def require_auth(fn):
         return fn(*a, **kw)
     return inner
 
-def date_filter(d):
+def date_format(d):
     today = date.today()
     if d == today:
         return 'Today'

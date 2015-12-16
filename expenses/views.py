@@ -9,7 +9,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.sql import func
 from werkzeug.security import safe_str_cmp
 from .model import db, User, Purchase
-from .util import check_csrf, require_auth, require_noauth, date_filter, \
+from .util import check_csrf, require_auth, require_noauth, date_format, \
                   price_filter
 
 
@@ -27,7 +27,7 @@ def purchases_obj(page):
             'user': p.user.name,
             'name': p.name,
             'price': price_filter(p.cost),
-            'date': date_filter(p.date),
+            'date': date_format(p.date),
         } for p in purchases],
         'links': {},
     }
