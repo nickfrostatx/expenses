@@ -103,8 +103,11 @@ window.onload = function() {
                 loading = true;
                 request('GET', next, null, function(d) {
                     loading = false;
-                    next = d.links.next;
                     addExpenses(d);
+                    next = d.links.next;
+                    if (!next) {
+                        loadMsg.textContent = '';
+                    };
                     onScroll();
                 }, function(msg) {
                     loadMsg.textContent = 'Error loading more expenses';
