@@ -152,6 +152,7 @@ input, button {
     cursor: pointer;
     float: right;
     font-size: 30px;
+    padding-bottom: 6px;
     height: 57px;
     outline: none;
     position: relative;
