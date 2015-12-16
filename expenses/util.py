@@ -82,6 +82,7 @@ def require_auth(fn):
         return fn(*a, **kw)
     return inner
 
+
 def date_format(d):
     today = date.today()
     if d == today:
@@ -96,8 +97,10 @@ def date_format(d):
     else:
         return '{0:%B %Y}'.format(d)
 
+
 def price_filter(amount):
     return u'${0:,.2f}'.format(amount / 100.0)
+
 
 def random_string(size):
     """Generate a random base64 string from urandom."""
