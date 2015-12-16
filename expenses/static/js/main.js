@@ -105,14 +105,13 @@ window.onload = function() {
                     loading = false;
                     addExpenses(d);
                     next = d.links.next;
-                    if (!next) {
-                        loadMsg.textContent = '';
-                    };
                     onScroll();
                 }, function(msg) {
                     loadMsg.textContent = 'Error loading more expenses';
                     console.error(msg);
                 });
+            } else if (!next) {
+                loadMsg.textContent = '';
             };
         };
     })();
