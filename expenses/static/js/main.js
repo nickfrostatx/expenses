@@ -94,29 +94,34 @@ window.onload = function() {
     var loadMsg = document.getElementById('loading');
     var loadMoreExpenses = (function() {
         // This closure locks when called, and releases on a successful response
-        // If the response errors, the lock is never released
-        var page = 1;
+        // If the response has an error, the lock is never released
+        var next = data.links.next;
         var loading = false;
 
         return function() {
-            if (!loading) {
+            if (!loading && next) {
                 loading = true;
-                request('GET', '/expenses?page=' + page++, null, function(d) {
+                request('GET', next, null, function(d) {
                     loading = false;
+                    next = d.links.next;
                     addExpenses(d);
+                    onScroll();
                 }, function(msg) {
-                    loadMsg.textContent = 'Error loading more';
+                    loadMsg.textContent = 'Error loading more expenses';
                     console.error(msg);
                 });
             };
         };
     })();
 
-    window.addEventListener('scroll', function() {
+    function onScroll() {
         var toBottom = document.body.offsetHeight - window.pageYOffset
             - window.innerHeight;
         if (toBottom < 200) {
             loadMoreExpenses();
         };
-    });
+    };
+
+    window.addEventListener('scroll', onScroll);
+    onScroll();
 };

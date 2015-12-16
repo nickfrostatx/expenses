@@ -15,18 +15,25 @@ from .util import check_csrf, require_auth, require_noauth, date_filter, \
 
 views = Blueprint('views', __name__, template_folder='templates')
 
+PER_PAGE = 50
 
-def purchases_obj(purchase_query):
+
+def purchases_obj(page):
+    total_purchases = db.session.query(Purchase).count()
+    purchases = db.session.query(Purchase).order_by(Purchase.date.desc()) \
+        .slice(page * PER_PAGE, (page + 1) * PER_PAGE)
     data = {
         'expenses': [{
             'user': p.user.name,
             'name': p.name,
             'price': price_filter(p.cost),
             'date': date_filter(p.date),
-        } for p in purchase_query],
+        } for p in purchases],
+        'links': {},
     }
-    if not data['expenses']:
-        return None
+    if total_purchases > (page + 1) * PER_PAGE:
+        data['links']['next'] = url_for('.get_expenses', page=page + 1,
+                                        _external=True)
     return data
 
 
@@ -39,11 +46,9 @@ def home():
         avg = float(sum(user[1] for user in users)) / len(users)
     else:
         avg = 0
-    purchases = db.session.query(Purchase).order_by(Purchase.date.desc()) \
-        .limit(25)
+    purchases = purchases_obj(0)
     return render_template('views/home.html', users=users, avg=avg,
-                           purchases=purchases_obj(purchases),
-                           today=date.today())
+                           purchases=purchases, today=date.today())
 
 
 @views.route('/expenses', methods=['GET'])
@@ -54,10 +59,8 @@ def get_expenses():
         return jsonify({'msg': 'Invalid page number.'}), 404
     if page < 0:
         return jsonify({'msg': 'Invalid page number.'}), 404
-    purchases = db.session.query(Purchase).order_by(Purchase.date.desc()) \
-        .slice(page * 25, (page + 1) * 25)
-    data = purchases_obj(purchases)
-    if not data:
+    data = purchases_obj(page)
+    if not data['expenses']:
         return jsonify({'msg': 'Invalid page number.'}), 404
     return jsonify(data)
 
