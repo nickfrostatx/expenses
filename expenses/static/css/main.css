@@ -143,11 +143,6 @@ input, button {
     text-align: center;
 }
 
-.plus-wrap {
-    padding: 20px 0 0;
-    height: 35px;
-}
-
 #plus {
     background-color: #FF9800;
     border-radius: 50%;
