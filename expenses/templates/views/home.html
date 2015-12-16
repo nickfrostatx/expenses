@@ -16,7 +16,7 @@
       {%- for user in users %}
       <div class="user-card">
         <div class="user-name">{{ user[0] }}</div>
-        <div class="user-balance {{ 'positive' if user[1] > avg else 'negative' }}">{{ (user[1] - avg) | price}}</div>
+        <div class="user-balance {{ 'positive' if user[1] >= avg else 'negative' }}">{{ (user[1] - avg) | price}}</div>
       </div>
       {%- endfor %}
       <form id="new-purchase" class="hidden" method="POST" action="/expenses">
