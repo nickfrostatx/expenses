@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 """Test utility functions."""
 
-from expenses.util import LazyObject, check_csrf, random_string
+from datetime import date
+from expenses.util import LazyObject, check_csrf, date_format, random_string
 import flask
 import pytest
 
@@ -90,6 +91,30 @@ def test_check_csrf():
 
         rv = client.post('/', headers=headers, data='token=somecsrf')
         assert rv.status_code == 200
+
+
+def test_date_format():
+    assert date_format(date(2015, 1, 1), date(2015, 1, 1)) == 'Today'
+
+    assert date_format(date(2015, 1, 2), date(2015, 1, 1)) == 'Tomorrow'
+    assert date_format(date(2015, 1, 1), date(2014, 12, 31)) == 'Tomorrow'
+
+    assert date_format(date(2015, 1, 1), date(2015, 1, 2)) == 'Yesterday'
+    assert date_format(date(2014, 12, 31), date(2015, 1, 1)) == 'Yesterday'
+
+    assert date_format(date(2014, 12, 30), date(2015, 1, 1)) == 'December'
+    assert date_format(date(2014, 11, 30), date(2014, 12, 31)) == 'November'
+    assert date_format(date(2014, 9, 30), date(2014, 12, 31)) == 'September'
+    assert date_format(date(2014, 8, 31), date(2014, 12, 31)) == 'August 2014'
+
+    assert date_format(date(2014, 7, 31), date(2014, 12, 31)) == 'July 2014'
+    assert date_format(date(2014, 1, 31), date(2015, 1, 1)) == 'January 2014'
+    assert date_format(date(2014, 1, 31), date(2015, 12, 1)) == 'January 2014'
+
+    assert date_format(date(2015, 1, 31), date(2014, 12, 1)) == 'January'
+    assert date_format(date(2015, 3, 31), date(2014, 12, 1)) == 'March'
+    assert date_format(date(2015, 4, 30), date(2014, 12, 1)) == 'April 2015'
+    assert date_format(date(2015, 1, 31), date(2014, 1, 1)) == 'January 2015'
 
 
 def test_random_string():

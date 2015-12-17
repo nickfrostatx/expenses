@@ -83,16 +83,21 @@ def require_auth(fn):
     return inner
 
 
-def date_format(d):
-    today = date.today()
+def date_format(d, today=None):
+    if today is None:
+        today = date.today()
     if d == today:
         return 'Today'
+    elif (today - d).days == -1:
+        return 'Tomorrow'
     elif (today - d).days == 1:
         return 'Yesterday'
-    elif d.year == today.year and d.month == today.month:
+
+    month = d.year * 12 + d.month
+    this_month = today.year * 12 + today.month
+    if month == this_month:
         return 'This month'
-    elif d.year == today.year or (d.year == today.year - 1 and
-                                  d.month > today.month):
+    elif abs(month - this_month) <= 3:
         return '{0:%B}'.format(d)
     else:
         return '{0:%B %Y}'.format(d)
