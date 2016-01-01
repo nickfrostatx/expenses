@@ -2,7 +2,7 @@
 """
 Roommate expense splitting.
 
-:copyright: (c) 2015 by Nicholas Frost.
+:copyright: (c) 2016 by Nicholas Frost.
 :license: MIT, see LICENSE for more details.
 """
 
